@@ -28,9 +28,7 @@ class ProductPackaging(models.Model):
     qty_per_level = fields.Char(
         compute="_compute_qty_per_level", string="Qty per package level"
     )
-    name_type = fields.Selection(
-        string="Name Based On", related="packaging_level_id.name_type"
-    )
+    name_policy = fields.Selection(related="packaging_level_id.name_policy")
 
     def default_packaging_level_id(self):
         return self.env["product.packaging.level"].search(
@@ -40,7 +38,7 @@ class ProductPackaging(models.Model):
     @api.constrains("packaging_level_id", "product_id")
     def _check_one_packaging_level_per_product(self):
         packages_name_by_level = self.filtered(
-            lambda p: p.name_type == "by_package_level"
+            lambda p: p.name_policy == "by_package_level"
         )
         for packaging in packages_name_by_level:
             product = packaging.product_id
@@ -133,8 +131,8 @@ class ProductPackaging(models.Model):
     @api.onchange("packaging_level_id", "package_type_id", "name")
     def _onchange_name(self):
         new_name = self.name
-        if self.name_type == "by_package_level":
+        if self.name_policy == "by_package_level":
             new_name = self.packaging_level_id.display_name
-        elif self.name_type == "by_package_type":
+        elif self.name_policy == "by_package_type":
             new_name = self.package_type_id.name
         self.name = new_name

@@ -32,7 +32,7 @@
         <field name="inherit_id" ref="stock.product_packaging_form_view" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_id']" position="before">
-                <field name="name_type" invisible="1" />
+                <field name="name_policy" invisible="1" />
             </xpath>
             <xpath expr="//field[@name='package_type_id']" position="after">
                 <field name="qty_per_level" />
@@ -48,7 +48,7 @@
                 <attribute name="force_save">1</attribute>
                 <attribute
                     name="attrs"
-                >{'readonly': [('name_type', '!=', 'user_defined')]}</attribute>
+                >{'readonly': [('name_policy', '!=', 'user_defined')]}</attribute>
             </field>
 
         </field>

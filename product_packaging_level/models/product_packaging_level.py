@@ -15,8 +15,7 @@ class ProductPackagingLevel(models.Model):
     has_gtin = fields.Boolean()
     active = fields.Boolean(default=True)
     is_default = fields.Boolean()
-    name_type = fields.Selection(
-        string="Name Based On",
+    name_policy = fields.Selection(
         selection=[
             ("by_package_level", "Package Level Name"),
             ("by_package_type", "Package Type Name"),
@@ -31,11 +30,11 @@ class ProductPackagingLevel(models.Model):
         ),
     )
 
-    @api.constrains("name_type")
+    @api.constrains("name_policy")
     def _check_packaging_name(self):
         for packaging in self:
             activated_packages = self.env.user.has_group("stock.group_tracking_lot")
-            if packaging.name_type == "by_package_type" and not activated_packages:
+            if packaging.name_policy == "by_package_type" and not activated_packages:
                 raise ValidationError(
                     _(
                         "Packaging name based on package type is only allowed"

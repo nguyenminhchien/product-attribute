@@ -38,7 +38,7 @@ class TestProductPackagingLevel(common.TransactionCase):
         self.assertEqual(self.default_level.display_name, "Default Level (DEFAULT)")
 
     def test_name_by_level(self):
-        self.packaging.name_type = "by_package_level"
+        self.packaging.name_policy = "by_package_level"
         self.assertEqual(self.packaging.name, "Packaging Test")
 
     def test_name_by_package_type(self):
@@ -46,7 +46,7 @@ class TestProductPackagingLevel(common.TransactionCase):
         self.env.user.write(
             {"groups_id": [(4, self.env.ref("stock.group_tracking_lot").id)]}
         )
-        self.packaging.name_type = "by_package_type"
+        self.packaging.name_policy = "by_package_type"
         self.packaging.package_type_id = self.package_type_box
         self.packaging._onchange_name()
         self.assertEqual(self.packaging.name, "Box")
@@ -57,7 +57,7 @@ class TestProductPackagingLevel(common.TransactionCase):
             {"groups_id": [(4, self.env.ref("stock.group_tracking_lot").id)]}
         )
         packaging_name = "user defined - not box - not pallet"
-        self.packaging.packaging_level_id.name_type = "user_defined"
+        self.packaging.packaging_level_id.name_policy = "user_defined"
         self.packaging.name = packaging_name
         # try to change package_type_id
         self.packaging.package_type_id = self.package_type_box
@@ -76,7 +76,7 @@ class TestProductPackagingLevel(common.TransactionCase):
         internal_group.implied_ids -= group_tracking_lot
         self.env.user.groups_id -= group_tracking_lot
         with self.assertRaises(ValidationError):
-            self.packaging.packaging_level_id.write({"name_type": "by_package_type"})
+            self.packaging.packaging_level_id.write({"name_policy": "by_package_type"})
 
     def test_default_packaging_level_defined_on_package_type(self):
         self.package_type_box.packaging_level_id = self.default_level
