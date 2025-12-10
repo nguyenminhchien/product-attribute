@@ -97,6 +97,11 @@ class ProductScaleLog(models.Model):
             # Set custom fields
             for product_line in group.scale_system_id.product_line_ids:
                 if product_line.field_id:
+                    if not hasattr(log.product_id, product_line.field_id.name):
+                        product_text += ""
+                        if product_line.delimiter:
+                            product_text += product_line.delimiter
+                        continue
                     value = getattr(log.product_id, product_line.field_id.name)
 
                 if product_line.type == "id":
